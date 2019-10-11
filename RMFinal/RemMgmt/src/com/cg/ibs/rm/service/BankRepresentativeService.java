@@ -18,8 +18,5 @@ public interface BankRepresentativeService {
 
 	public void saveBeneficiaryDetails(String uci, Beneficiary beneficiary);
 
-	public void removeTempCreditCardDetails(String uci, CreditCard card);
-
-	public void removeTempBeneficiaryDetails(String uci, Beneficiary beneficiary);
 }
 

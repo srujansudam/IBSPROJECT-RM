@@ -39,14 +39,4 @@ public class BankRepresentativeServiceImpl implements BankRepresentativeService 
 		bankRepresentativeDAO.copyBeneficiaryDetails(uci, beneficiary);
 	}
 
-	@Override
-	public void removeTempCreditCardDetails(String uci, CreditCard card) {
-		bankRepresentativeDAO.deleteTempCreditCardDetails(uci, card);
-	}
-
-	@Override
-	public void removeTempBeneficiaryDetails(String uci, Beneficiary beneficiary) {
-		bankRepresentativeDAO.deleteTempBeneficiaryDetails(uci, beneficiary);
-	}
-
 }

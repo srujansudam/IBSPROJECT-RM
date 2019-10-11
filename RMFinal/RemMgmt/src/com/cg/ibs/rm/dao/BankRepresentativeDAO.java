@@ -17,7 +17,4 @@ public interface BankRepresentativeDAO {
 
 	public void copyBeneficiaryDetails(String uci, Beneficiary beneficiary);
 
-	public void deleteTempCreditCardDetails(String uci, CreditCard card);
-
-	public void deleteTempBeneficiaryDetails(String uci, Beneficiary beneficiary);
 }

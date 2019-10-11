@@ -43,20 +43,6 @@ public class BankRepresentativeDAOImpl implements BankRepresentativeDAO {
 		return check;
 	}
 
-	public void deleteTempCreditCardDetails(String uci, CreditCard card) {
-
-		if (tempMap.get(uci).getUnapprovedCreditCards().contains(card)) {
-			tempMap.get(uci).getUnapprovedCreditCards().remove(card);
-		}
-	}
-
-	public void deleteTempBeneficiaryDetails(String uci, Beneficiary beneficiary) {
-		if (tempMap.get(uci).getUnapprovedBeneficiaries().contains(beneficiary)) {
-			tempMap.get(uci).getUnapprovedBeneficiaries().remove(beneficiary);
-		}
-
-	}
-
 	@Override
 	public void copyBeneficiaryDetails(String uci, Beneficiary beneficiary) {
 		finalMap.get(uci).getSavedBeneficiaries().add(beneficiary);
