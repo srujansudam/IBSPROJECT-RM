@@ -42,10 +42,9 @@ public class MainUi {
 			for (MainMenu menu : MainMenu.values()) {
 				System.out.println((menu.ordinal() + 1) + "\t" + menu);
 			}
-			System.out.println("Your choice :");// choosing of identity whether
-												// user or bank representative
-			int ordinal = scanner.nextInt() - 1;
+			System.out.println("Your choice :");// choosing of identity whether user or bank representative
 
+			int ordinal = choice(scanner) - 1;
 			if (0 <= (ordinal) && MainMenu.values().length > ordinal) {
 				choice = MainMenu.values()[ordinal];
 				switch (choice) {
@@ -186,29 +185,29 @@ public class MainUi {
 					System.out.println("Enter a date that is not stupid.");
 					expiryDate = scanner.next();
 				}
-				if (expiryDate.length() == 10) {
-					boolean valid3;
-					try {
-						valid3 = cardService.validateDateOfExpiry(expiryDate);
 
-						if (valid3) {
-							card.setcreditDateOfExpiry(expiryDate);
-						} else {
-							while (!valid3) {
-								System.out.println("Enter the correct details again.");
-								expiryDate = scanner.next();
-								valid3 = cardService.validateDateOfExpiry(expiryDate);
-							}
-							card.setcreditDateOfExpiry(expiryDate);
-						}
-						cardService.saveCardDetails(uci, card);
-						System.out.println("\nDetails entered by you :" + "\nCard name : " + card.getnameOnCreditCard()
-								+ "\nCard Number : " + card.getcreditCardNumber() + "\nExpiry date :"
-								+ card.getcreditDateOfExpiry());
-						System.out.println("\nCard gone for approval.. Good luck!!");
-					} catch (IBSExceptions exception) {
-						System.out.println(exception.getMessage());
-					}
+				boolean valid3;
+				valid3 = cardService.validateDateOfExpiry(expiryDate);
+
+				if (valid3) {
+					card.setcreditDateOfExpiry(expiryDate);
+				}
+				while (!valid3) {
+					System.out.println("Enter the correct details again.");
+					expiryDate = scanner.next();
+					valid3 = cardService.validateDateOfExpiry(expiryDate);
+				}
+				card.setcreditDateOfExpiry(expiryDate);
+
+				try {
+					cardService.saveCardDetails(uci, card);
+
+					System.out.println("\nDetails entered by you :" + "\nCard name : " + card.getnameOnCreditCard()
+							+ "\nCard Number : " + card.getcreditCardNumber() + "\nExpiry date :"
+							+ card.getcreditDateOfExpiry());
+					System.out.println("\nCard gone for approval.. Good luck!!");
+				} catch (IBSExceptions e) {
+					System.out.println(e.getMessage());
 				}
 				break;
 			case 2:
@@ -238,6 +237,7 @@ public class MainUi {
 				creditCardOption = 0;
 			}
 		} while (0 == creditCardOption);
+
 	}
 
 	private void addOrModifyBeneficiary() {
@@ -569,14 +569,8 @@ public class MainUi {
 		int choice3;
 		do {
 			choice3 = 0;
-
 			System.out.println("Enter your start date (in format dd/MM/yyyy)");
 			String mydate = scanner.next();
-			while (mydate.length() != 10) {
-				System.out.println("Enter a Date that is not stupid ");
-				mydate = scanner.next();
-			}
-			if (mydate.length() == 10) {
 				autoPayment.setDateOfStart(mydate);
 				try {
 					check = autopaymentservobj.autoDeduction(uci, autoPayment);
@@ -590,8 +584,7 @@ public class MainUi {
 					choice3 = 1;
 					System.out.println(exception.getMessage());
 				}
-			}
-		} while (choice3 == 1);
+			}while (choice3 == 1);
 	}
 
 	private void removeAutoPayment() {// removal of autopayment
@@ -787,6 +780,14 @@ public class MainUi {
 			showRequests();
 		}
 
+	}
+
+	private int choice(Scanner scanner1) {
+		while (!scanner1.hasNextInt()) {
+			scanner1.next();
+			System.out.println("Please enter a valid input");
+		}
+		return scanner1.nextInt();
 	}
 
 	public static void main(String[] args) {

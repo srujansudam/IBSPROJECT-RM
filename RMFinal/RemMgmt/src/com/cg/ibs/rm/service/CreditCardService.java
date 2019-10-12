@@ -11,7 +11,7 @@ public interface CreditCardService {
 
 	public boolean validateCardNumber(BigInteger creditCardNumber);
 
-	public boolean validateDateOfExpiry(String creditDateOfExpiry) throws IBSExceptions;
+	public boolean validateDateOfExpiry(String creditDateOfExpiry) ;
 
 	public boolean validateNameOnCard(String nameOnCreditCard);
 

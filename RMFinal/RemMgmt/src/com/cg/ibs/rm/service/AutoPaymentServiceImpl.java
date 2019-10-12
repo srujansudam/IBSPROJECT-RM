@@ -11,7 +11,6 @@ import com.cg.ibs.rm.bean.AutoPayment;
 import com.cg.ibs.rm.bean.ServiceProvider;
 import com.cg.ibs.rm.dao.AutoPaymentDAO;
 import com.cg.ibs.rm.dao.AutoPaymentDAOImpl;
-import com.cg.ibs.rm.exception.ExceptionMessages;
 import com.cg.ibs.rm.exception.IBSExceptions;
 
 public class AutoPaymentServiceImpl implements AutoPaymentService {
@@ -32,30 +31,24 @@ public class AutoPaymentServiceImpl implements AutoPaymentService {
 	@Override
 	public boolean autoDeduction(String uci, AutoPayment autoPayment) throws IBSExceptions {
 		LocalDate today = LocalDate.now();
-		if (!Pattern.matches("^(((3[0 1])|([1 2][0-9])|(0[1-9]))//((1[0-2])|(0[1-9]))//[0-9]{4})$", autoPayment.getDateOfStart()))
-				throw new IBSExceptions(ExceptionMessages.ERROR7);	
 		boolean validAutoDeduct = false;
-		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		LocalDate startOfAutoPayment = LocalDate.parse(autoPayment.getDateOfStart(), dtFormatter);
-		if (startOfAutoPayment.isBefore(today)) {
+		if (Pattern.matches("^[0-3]?[0-9]/[0-3]?[0-9]/(?:[0-9]{2})?[0-9]{2}$", autoPayment.getDateOfStart())) {
+			DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDate startOfAutoPayment = LocalDate.parse(autoPayment.getDateOfStart(), dtFormatter);
+			if (!startOfAutoPayment.isBefore(today)) {
+				autoPaymentDao.copyDetails(uci, autoPayment);
 
-			throw new IBSExceptions(ExceptionMessages.ERROR7);
-		} else {
-			autoPaymentDao.copyDetails(uci, autoPayment);
-
-
-
-			if (today.equals(startOfAutoPayment)) {
-				if (-1 != autoPaymentDao.getCurrentBalance(uci).compareTo(autoPayment.getAmount())) {
-					BigDecimal balance = autoPaymentDao.getCurrentBalance(uci).subtract(autoPayment.getAmount());
-					autoPaymentDao.setCurrentBalance(uci, balance);
-					startOfAutoPayment.plusMonths(1);
+				if (today.equals(startOfAutoPayment)) {
+					if (-1 != autoPaymentDao.getCurrentBalance(uci).compareTo(autoPayment.getAmount())) {
+						BigDecimal balance = autoPaymentDao.getCurrentBalance(uci).subtract(autoPayment.getAmount());
+						autoPaymentDao.setCurrentBalance(uci, balance);
+						startOfAutoPayment.plusMonths(1);
+					}
 				}
+				validAutoDeduct = true;
+
 			}
-			validAutoDeduct = true;
 		}
-
-
 		return validAutoDeduct;
 	}
 

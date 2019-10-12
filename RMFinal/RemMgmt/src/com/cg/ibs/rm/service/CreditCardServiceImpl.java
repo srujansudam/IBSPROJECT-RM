@@ -15,11 +15,11 @@ import com.cg.ibs.rm.exception.IBSExceptions;
 public class CreditCardServiceImpl implements CreditCardService {
 
 	private CreditCardDAO creditCardDao = new CreditCardDAOImpl();
-	
+
 	@Override
 	public Set<CreditCard> showCardDetails(String uci) {
 		return creditCardDao.getDetails(uci);
-		 
+
 	}
 
 	@Override
@@ -32,17 +32,19 @@ public class CreditCardServiceImpl implements CreditCardService {
 	}
 
 	@Override
-	public boolean validateDateOfExpiry(String creditDateOfExpiry) throws IBSExceptions {
+	public boolean validateDateOfExpiry(String creditCardExpiry) {
 		LocalDate today = LocalDate.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		if (!Pattern.matches("^(((3[0 1])|([1 2][0-9])|(0[1-9]))//((1[0-2])|(0[1-9]))//[0-9]{4})$",creditDateOfExpiry))
-		{
-			throw new IBSExceptions(ExceptionMessages.ERROR7);
+		boolean validDate = false;
+		if (Pattern.matches("^([3][0]/[0-3]?[0-9]/(?:[0-9]{2})?[0-9]{2})$", creditCardExpiry)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDate creditDateOfExpiry = LocalDate.parse(creditCardExpiry, formatter);
+			if (!creditDateOfExpiry.isBefore(today)) {
+				validDate = true;
+			} else {
+				validDate = false;
+			}
 		}
-		LocalDate creditCardExpiry = LocalDate.parse(creditDateOfExpiry, formatter);
-		boolean validDate = true;
-		if (creditCardExpiry.isBefore(today))
-			validDate = false;
+		System.out.println(validDate);
 		return validDate;
 	}
 
